@@ -28,10 +28,13 @@
         }
 
         const trimmed = path.endsWith("/") ? path.slice(0, -1) : path;
-        const htmlPath = trimmed.endsWith(".html")
-          ? trimmed
-          : `${trimmed}.html`;
-        const targetUrl = new URL(`/public${htmlPath}`, window.location.origin);
+        const lastSegment = trimmed.split("/").pop() || "";
+        const hasExtension = lastSegment.includes(".");
+        const targetPath = hasExtension ? trimmed : `${trimmed}.html`;
+        const targetUrl = new URL(
+          `/public${targetPath}`,
+          window.location.origin
+        );
         targetUrl.searchParams.set("redirected", "1");
         window.location.replace(targetUrl.toString());
       })();
