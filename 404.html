@@ -13,9 +13,15 @@
         const path = window.location.pathname;
         const status = document.getElementById("status");
 
-        if (!path || path === "/") {
+        if (path === "/") {
           status.textContent = "Page not found. Redirecting to /public/ …";
           window.location.replace("/public/");
+          return;
+        }
+
+        if (path.startsWith("/public/")) {
+          status.textContent =
+            "Requested page was not found. Try navigating from /public/.";
           return;
         }
 
@@ -24,21 +30,8 @@
           ? trimmed
           : `${trimmed}.html`;
         const target = `/public${htmlPath}`;
-        status.textContent = "Checking for the requested page…";
-
-        fetch(target, { method: "HEAD" })
-          .then((response) => {
-            if (response.ok) {
-              window.location.replace(target);
-            } else {
-              status.textContent =
-                `Requested page was not found (HTTP ${response.status}). Try navigating from /public/.`;
-            }
-          })
-          .catch(() => {
-            status.textContent =
-              "Network error during redirect. Try loading the page under /public/.";
-          });
+        status.textContent = "Redirecting to the requested page…";
+        window.location.replace(target);
       })();
     </script>
   </body>
