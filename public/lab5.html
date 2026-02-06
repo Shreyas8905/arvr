@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <title>A-Frame Experimental Sandbox - Clean Edition</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+    <script>
+      AFRAME.registerComponent("visual-stress-test", {
+        init: function () {
+          const el = this.el;
+          el.addEventListener("mouseenter", () => {
+            // Updated to a professional Rose/Wine color for hover
+            el.setAttribute("material", { wireframe: true, color: "#8B2635" });
+          });
+          el.addEventListener("mouseleave", () => {
+            // Updated back to Slate Blue
+            el.setAttribute("material", { wireframe: false, color: "#4A5568" });
+          });
+        },
+      });
+      AFRAME.registerComponent("glitch-scale", {
+        init: function () {
+          const el = this.el;
+          let isStretched = false;
+          el.addEventListener("click", () => {
+            if (!isStretched) {
+              el.setAttribute("scale", "0.5 4 0.5");
+            } else {
+              el.setAttribute("scale", "1 1 1");
+            }
+            isStretched = !isStretched;
+          });
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene fog="type: linear; color: #F7FAFC; near: 1; far: 15" background="color: #F7FAFC">
+      
+      <a-camera position="0 1.6 4">
+        <a-entity
+          cursor="rayOrigin: mouse"
+          raycaster="objects: .interactive"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025"
+          material="color: #2D3748; shader: flat" 
+        >
+        </a-entity>
+      </a-camera>
+
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+      <a-entity light="type: directional; intensity: 0.8; castShadow: true" position="-1 4 2"></a-entity>
+
+      <a-box
+        class="interactive"
+        position="-2 0.5 -3"
+        material="color: #E53E3E; roughness: 0.2; metalness: 0.1"
+        glitch-scale
+      >
+      </a-box>
+
+      <a-cylinder
+        class="interactive"
+        position="0 0.75 -3"
+        radius="0.6"
+        height="1.5"
+        material="color: #4A5568"
+        visual-stress-test
+      >
+      </a-cylinder>
+
+      <a-torus-knot
+        position="2 1.5 -4"
+        radius="0.5"
+        radius-tubular="0.04"
+        material="color: #D4AF37; metalness: 0.6; roughness: 0.2"
+        animation="property: rotation; to: 360 360 0; loop: true; dur: 8000; easing: linear"
+      >
+      </a-torus-knot>
+
+      <a-circle
+        position="0 0 -3"
+        rotation="-90 0 0"
+        radius="10"
+        material="color: #E2E8F0; src: https://cdn.aframe.io/a-grid-glitch/grid.png; repeat: 20 20; opacity: 0.5"
+      >
+      </a-circle>
+
+      <a-sky color="#FFFFFF"></a-sky>
+    </a-scene>
+  </body>
+</html>
