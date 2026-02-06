@@ -7,11 +7,17 @@
     <title>Redirecting…</title>
   </head>
   <body>
-    <p>Redirecting to the requested page…</p>
+    <p id="status">Redirecting to the requested page…</p>
     <script>
       (function () {
         const path = window.location.pathname;
-        if (!path || path === "/") return;
+        const status = document.getElementById("status");
+
+        if (!path || path === "/") {
+          status.textContent = "Page not found. Redirecting to /public/ …";
+          window.location.replace("/public/");
+          return;
+        }
 
         const trimmed = path.endsWith("/") ? path.slice(0, -1) : path;
         const htmlPath = trimmed.endsWith(".html")
@@ -23,9 +29,15 @@
           .then((response) => {
             if (response.ok) {
               window.location.replace(target);
+            } else {
+              status.textContent =
+                "Requested page was not found. Try navigating from /public/.";
             }
           })
-          .catch(() => {});
+          .catch(() => {
+            status.textContent =
+              "Redirect failed. Try loading the page under /public/.";
+          });
       })();
     </script>
   </body>
