@@ -7,7 +7,7 @@
     <title>Redirecting</title>
   </head>
   <body>
-    <p id="status">Redirecting to the requested page.</p>
+    <p id="status">Redirecting to the requested page. Please wait.</p>
     <script>
       (function () {
         const path = window.location.pathname;
@@ -16,14 +16,14 @@
         const alreadyRedirected = params.has("redirected");
 
         if (path === "/") {
-          status.textContent = "Page not found. Redirecting to /public/.";
+          status.textContent = "Page not found. Redirecting to /public/";
           window.location.replace("/public/");
           return;
         }
 
         if (path.startsWith("/public/") || alreadyRedirected) {
           status.textContent =
-            "Requested page was not found. Try navigating from /public/.";
+            "Requested page was not found. Try navigating from /public/";
           return;
         }
 
