@@ -24,6 +24,7 @@
           ? trimmed
           : `${trimmed}.html`;
         const target = `/public${htmlPath}`;
+        status.textContent = "Checking for the requested page…";
 
         fetch(target, { method: "HEAD" })
           .then((response) => {
@@ -31,7 +32,7 @@
               window.location.replace(target);
             } else {
               status.textContent =
-                "Requested page was not found. Try navigating from /public/.";
+                `Requested page was not found (HTTP ${response.status}). Try navigating from /public/.`;
             }
           })
           .catch(() => {
