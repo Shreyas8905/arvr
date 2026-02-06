@@ -12,6 +12,8 @@
       (function () {
         const path = window.location.pathname;
         const status = document.getElementById("status");
+        const params = new URLSearchParams(window.location.search);
+        const alreadyRedirected = params.has("redirected");
 
         if (path === "/") {
           status.textContent = "Page not found. Redirecting to /public/.";
@@ -19,7 +21,7 @@
           return;
         }
 
-        if (path.startsWith("/public/")) {
+        if (path.startsWith("/public/") || alreadyRedirected) {
           status.textContent =
             "Requested page was not found. Try navigating from /public/.";
           return;
@@ -29,8 +31,9 @@
         const htmlPath = trimmed.endsWith(".html")
           ? trimmed
           : `${trimmed}.html`;
-        const target = `/public${htmlPath}`;
-        window.location.replace(target);
+        const targetUrl = new URL(`/public${htmlPath}`, window.location.origin);
+        targetUrl.searchParams.set("redirected", "1");
+        window.location.replace(targetUrl.toString());
       })();
     </script>
   </body>
