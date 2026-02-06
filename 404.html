@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting…</title>
+    <title>Redirecting</title>
   </head>
   <body>
-    <p id="status">Redirecting to the requested page…</p>
+    <p id="status">Redirecting to the requested page.</p>
     <script>
       (function () {
         const path = window.location.pathname;
         const status = document.getElementById("status");
 
         if (path === "/") {
-          status.textContent = "Page not found. Redirecting to /public/ …";
+          status.textContent = "Page not found. Redirecting to /public/.";
           window.location.replace("/public/");
           return;
         }
@@ -30,7 +30,6 @@
           ? trimmed
           : `${trimmed}.html`;
         const target = `/public${htmlPath}`;
-        status.textContent = "Redirecting to the requested page…";
         window.location.replace(target);
       })();
     </script>
