@@ -1,0 +1,58 @@
+name: Deploy static site
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Smoke test server.js serves public files
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          sleep 5
+          curl -f http://localhost:3000/lab4.html > /tmp/lab4.html
+          curl -f http://localhost:3000/lab5.html > /tmp/lab5.html
+          kill $SERVER_PID
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload public folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
