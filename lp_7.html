@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <script src="aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <img id="img1" src="img1.jpg" />
+        <img id="img2" src="img2.jpg" />
+        <img id="img3" src="img3.jpg" />
+      </a-assets>
+      <a-camera
+        position="0 1.6 4"
+        look-controls
+        cursor="rayOrigin: mouse"
+        raycaster="objects: .clickable"
+      ></a-camera>
+      <a-sky id="sky" src="#img1" rotation0="0 -90 0"></a-sky>
+      <a-circle
+        class="clickable"
+        position="-1 1.5 -3"
+        radius="0.5"
+        color="black"
+        change-sky="target: #img1"
+      ></a-circle>
+      <a-circle
+        class="clickable"
+        position="-2 1.5 -3"
+        radius="0.5"
+        color="black"
+        change-sky="target: #img2"
+      ></a-circle>
+      <a-circle
+        class="clickable"
+        position="-3 1.5 -3"
+        radius="0.5"
+        color="black"
+        change-sky="target: #img3"
+      ></a-circle>
+    </a-scene>
+    <script>
+      AFRAME.registerComponent("change-sky", {
+        schema: { target: { type: "string" } },
+        init: function () {
+          this.el.addEventListener("click", () =>
+            document
+              .querySelector("#sky")
+              .setAttribute("src", this.data.target),
+          );
+        },
+      });
+    </script>
+  </body>
+</html>
+<!doctype html>
+<html>
+  <head>
+    <title>Geolocation</title>
+    <script src="aframe.min.js"></script>
+    <script>
+      const targetLocations = [
+        { id: "box", lat: 12.90744, lon: 77.56683, threshold: 0.005 },
+        {
+          id: "cylinder",
+          lat: 12.90509057,
+          lon: 77.55971556,
+          threshold: 0.005,
+        },
+        { id: "sphere", lat: 12.9564672, lon: 77.594624, threshold: 0.005 },
+      ];                                                                                                                                                                       
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const status = document.getElementById("currentLocation");
+
+        function checkProximity(position) {
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+
+          status.innerText = `Current: ${userLat.toFixed(5)}, ${userLon.toFixed(5)}`;
+          targetLocations.forEach((location) => {
+            const el = document.getElementById(location.id);
+            if (!el) return;
+            const latDist = Math.abs(userLat - location.lat);
+            const lonDist = Math.abs(userLon - location.lon);
+            if (latDist < location.threshold && lonDist < location.threshold) {
+              el.setAttribute("visible", "true");
+            } else {
+              el.setAttribute("visible", "false");
+            }
+          });
+        }
+        function startTracking() {
+          if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(
+              checkProximity,
+              (err) => (status.innerText = "Error: " + err.message),
+              { enableHighAccuracy: true },
+            );
+          }
+        }
+        startTracking();
+      });
+    </script>
+  </head>
+  <body>
+    <h3
+      id="currentLocation"
+      style="position: fixed; z-index: 10; background: white"
+    >
+      Fetching location...
+    </h3>
+    <a-scene>
+      <a-box
+        id="box"
+        position="0 0.5 -3"
+        color="purple"
+        visible="false"
+      ></a-box>
+      <a-cylinder
+        id="cylinder"
+        position="2 0.5 -3"
+        color="blue"
+        visible="false"
+      ></a-cylinder>
+      <a-sphere
+        id="sphere"
+        position="-2 0.75 -3"
+        color="green"
+        visible="false"
+      ></a-sphere>
+      <a-camera></a-camera>
+    </a-scene>
+  </body>
+</html>

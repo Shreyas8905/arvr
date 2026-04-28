@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script src="aframe.min.js"></script>
+    <script src="mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: targets.mind;"
+      vr-mode-ui="false"
+      device-orientation-permission-ui="false"
+    >
+      <a-camera postition="0 0 0" look-controls="false"></a-camera>
+      <a-entity mindar-image-target="targetindex: 0">
+        <a-box height="1" width="1" depth="1" color="red"></a-box>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
