@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting</title>
+  </head>
+  <body>
+    <p id="status">Redirecting to the requested page. Please wait.</p>
+    <script>
+      (function () {
+        const path = window.location.pathname;
+        const status = document.getElementById("status");
+        const params = new URLSearchParams(window.location.search);
+        const alreadyRedirected = params.has("redirected");
+
+        if (path === "/") {
+          status.textContent = "Page not found. Redirecting to /public/";
+          window.location.replace("/public/");
+          return;
+        }
+
+        if (path.startsWith("/public/") || alreadyRedirected) {
+          status.textContent =
+            "Requested page was not found. Try navigating from /public/";
+          return;
+        }
+
+        const trimmed = path.endsWith("/") ? path.slice(0, -1) : path;
+        const lastSegment = trimmed.split("/").pop() || "";
+        const hasExtension = lastSegment.includes(".");
+        const targetPath = hasExtension ? trimmed : `${trimmed}.html`;
+        const targetUrl = new URL(
+          `/public${targetPath}`,
+          window.location.origin
+        );
+        targetUrl.searchParams.set("redirected", "1");
+        window.location.replace(targetUrl.toString());
+      })();
+    </script>
+  </body>
+</html>
